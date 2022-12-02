@@ -1,3 +1,10 @@
+/*
+ *Скрипт создания таблиц базы данных.
+ *Тип : DDL (описание данных).
+ *Саязь: one to many.
+ *Auto_user - пользователь информационной системы.
+ *Auto_post - объявление пользователя.
+ */
 CREATE TABLE IF NOT EXISTS auto_user (
    id SERIAL PRIMARY KEY,
    login text,
