@@ -1,6 +1,7 @@
 package ru.job4j.cars.model.repository;
 
 import lombok.AllArgsConstructor;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import ru.job4j.cars.model.User;
 
@@ -17,6 +18,14 @@ public class UserRepository {
      * @return пользователь с id.
      */
     public User create(User user) {
+        Session session = sf.openSession();
+        try {
+            session.beginTransaction();
+            session.save(user);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        }
         return user;
     }
 
@@ -25,7 +34,18 @@ public class UserRepository {
      * @param user пользователь.
      */
     public void update(User user) {
-
+        Session session = sf.openSession();
+        try {
+            session.beginTransaction();
+            session.createQuery(
+                            "UPDATE User SET password = :fPassword WHERE id = :fId")
+                    .setParameter("fPassword", user.getPassword())
+                    .setParameter("fId", user.getId())
+                    .executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        }
     }
 
     /**
@@ -33,7 +53,17 @@ public class UserRepository {
      * @param userId ID
      */
     public void delete(int userId) {
-
+        Session session = sf.openSession();
+        try {
+            session.beginTransaction();
+            session.createQuery(
+                            "DELETE User WHERE id = :fId")
+                    .setParameter("fId", userId)
+                    .executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        }
     }
 
     /**
@@ -41,7 +71,11 @@ public class UserRepository {
      * @return список пользователей.
      */
     public List<User> findAllOrderById() {
-        return List.of();
+        Session session = sf.openSession();
+        List<User> result = session
+                .createQuery("from User as u order by u.id", User.class)
+                .getResultList();
+        return result;
     }
 
     /**
@@ -49,7 +83,12 @@ public class UserRepository {
      * @return пользователь.
      */
     public Optional<User> findById(int id) {
-        return Optional.empty();
+        Session session = sf.openSession();
+        Optional<User> result = session
+                    .createQuery("from User as u where u.id=:fId", User.class)
+                    .setParameter("fId", id)
+                    .stream().findAny();
+        return result;
     }
 
     /**
@@ -58,7 +97,12 @@ public class UserRepository {
      * @return список пользователей.
      */
     public List<User> findByLikeLogin(String key) {
-        return List.of();
+        Session session = sf.openSession();
+        List<User> result = session
+                .createQuery("from User as u where u.login like :fLogin", User.class)
+                .setParameter("fLogin", '%' + key + '%')
+                .getResultList();
+        return result;
     }
 
     /**
@@ -67,7 +111,11 @@ public class UserRepository {
      * @return Optional or user.
      */
     public Optional<User> findByLogin(String login) {
-        return Optional.empty();
+        Session session = sf.openSession();
+        Optional<User> result = session
+                .createQuery("from User as u where u.login=:fLogin", User.class)
+                .setParameter("fLogin", login)
+                .stream().findAny();
+        return result;
     }
-
 }
