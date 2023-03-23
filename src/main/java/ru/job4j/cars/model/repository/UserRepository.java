@@ -24,9 +24,10 @@ public class UserRepository {
             session.beginTransaction();
             session.save(user);
             session.getTransaction().commit();
-            session.close();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
         return user;
     }
@@ -45,9 +46,10 @@ public class UserRepository {
                     .setParameter("fId", user.getId())
                     .executeUpdate();
             session.getTransaction().commit();
-            session.close();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
     }
 
@@ -64,9 +66,10 @@ public class UserRepository {
                     .setParameter("fId", userId)
                     .executeUpdate();
             session.getTransaction().commit();
-            session.close();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
     }
 
@@ -83,9 +86,10 @@ public class UserRepository {
                     .createQuery("from User as u order by u.id", User.class)
                     .getResultList();
             session.getTransaction().commit();
-            session.close();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
         return result;
     }
@@ -104,9 +108,10 @@ public class UserRepository {
                     .setParameter("fId", id)
                     .uniqueResultOptional();
             session.getTransaction().commit();
-            session.close();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
         return result;
     }
@@ -126,9 +131,10 @@ public class UserRepository {
                     .setParameter("fLogin", '%' + key + '%')
                     .getResultList();
             session.getTransaction().commit();
-            session.close();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
         return result;
     }
@@ -148,9 +154,10 @@ public class UserRepository {
                     .setParameter("fLogin", login)
                     .uniqueResultOptional();
             session.getTransaction().commit();
-            session.close();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
         return result;
     }
